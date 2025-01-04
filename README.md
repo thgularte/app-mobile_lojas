@@ -28,6 +28,7 @@ Este é um aplicativo mobile desenvolvido em React Native com backend em TypeScr
 - Yarn ou npm.
 
 **Executar o front**
+* Para executar e se conectar com o backend é necessário alterar a URL da API usando o endereço ip do computador (front-end/resources/base_api.js)
 - utilizar aplicativo expo para visualizar a interface
 - instalar as dependencias (npm install ou yarn install)
 - inicia o expo (npx expo start)
