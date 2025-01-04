@@ -1,0 +1,63 @@
+datasource db {
+  provider = "postgresql" // ou outro banco que estiveres usando
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Lojas {
+  id_loja       String         @id @default(uuid())
+  id_categoria  String?
+  email         String
+  nome          String
+  senha         String
+  cep           String
+  endereco      String
+  documento     String
+  comunicacao   Json
+  logo          Bytes?
+  descricao     String?
+  categoria     Categorias?    @relation(fields: [id_categoria], references: [id_categoria])
+  posicao       Posicao_lojas?
+  produtos      Produtos[]
+  lojas_tags    Lojas_tags[]
+}
+
+model Categorias {
+  id_categoria  String    @id @default(uuid())
+  nome          String
+  lojas         Lojas[]
+}
+
+model Produtos {
+  id_produto    String    @id @default(uuid())
+  id_loja       String
+  nome          String
+  imagem        Bytes?
+  valor         String
+  loja          Lojas     @relation(fields: [id_loja], references: [id_loja])
+}
+
+model Posicao_lojas {
+  id_posicao       String   @id @default(uuid())
+  id_loja          String   @unique
+  ponto_localizacao Float[]
+  loja             Lojas    @relation(fields: [id_loja], references: [id_loja])
+}
+
+model Tags {
+  id_tag      String      @id @default(uuid())
+  nome        String
+  lojas_tags  Lojas_tags[]
+}
+
+model Lojas_tags {
+  id_loja     String
+  id_tag      String
+  loja        Lojas       @relation(fields: [id_loja], references: [id_loja])
+  tag         Tags        @relation(fields: [id_tag], references: [id_tag])
+  
+  @@id([id_loja, id_tag])
+}
