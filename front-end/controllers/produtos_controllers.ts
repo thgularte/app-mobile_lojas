@@ -1,21 +1,23 @@
 import axios from "axios"
 import {BASE_API} from '../resources/base_api'
 
-interface Produto {
+interface Produtos {
+    id_loja: string,
     nome: string,
-    valor: string,
-    imagem: string | File
+    valor: string
+    imagem: string 
 }
-
-async function post_produto(produto: Produto) {
+async function post_produto(produto: Produtos): Promise<any> {
     try {
         const response = await axios.post(`${BASE_API}/produtos`, produto, {
-            headers: { 'Content-Type': 'application/json' },
+        headers: {
+            "Content-Type": "application/json",
+            },
         });
-        return response.data;
+        return response.data
     } catch (error) {
-        console.log('Erro ao buscar produtos: ', error);
-        throw error; // Repassa o erro para tratamento externo, se necessário
+        console.error('Erro ao enviar produto:', error);
+        throw error;
     }
 }
 

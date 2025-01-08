@@ -5,6 +5,20 @@ const prisma = new PrismaClient() // usado para lidar com consultas no banco
 export default class ControllersProdutos {
 
     async post_produto(req: Request, res: Response) {
+        try{
+            const { id_loja, nome, valor, imagem } = req.body;
+            
+            
+            console.log('Nome:', nome);
+            console.log('Valor:', valor);
+            console.log('Imagem:', imagem);
+        
+            // Aqui você pode salvar os dados no banco
+            res.status(200).json({ msg: 'Produto recebido com sucesso!' });
+        }catch(error){
+            console.log('Erro ao adicionar produto.', error)
+            res.status(500).json({msg: 'Erro interno ao adicionar produto'})
+        }
        
     }  
     

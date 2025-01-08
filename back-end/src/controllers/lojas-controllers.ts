@@ -132,7 +132,11 @@ export default class ControllersLojas {
     
     async get_lojas(req: Request, res: Response){
         try {
-            const lojas = await prisma.lojas.findMany();
+            const lojas = await prisma.lojas.findMany({
+                include: {
+                  posicao: true, // Inclui os dados da posição relacionada à loja
+                },
+              });            
             res.status(200).json({ msg: 'Lojas encontradas', dados: lojas });
           } catch (error) {
             console.error('Erro ao buscar lojas:', error);

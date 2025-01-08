@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { post_produto } from '../../controllers/produtos_controllers';
+import * as FileSystem from 'expo-file-system';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PageAddProduto = () => {
   const [nome, setNome] = useState('');
@@ -15,18 +18,19 @@ const PageAddProduto = () => {
       alert('Permissão para acessar a galeria é necessária!');
       return;
     }
-
+  
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
-
+  
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      setSelectedImage(uri);
     }
   };
-
+  
   const handleCameraLaunch = async () => {
     // Solicita permissões para usar a câmera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -34,39 +38,43 @@ const PageAddProduto = () => {
       alert('Permissão para acessar a câmera é necessária!');
       return;
     }
-
+  
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       quality: 1,
     });
-
+  
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      const uri = result.assets[0].uri;
+      setSelectedImage(uri);
     }
   };
-
   const addProduto = async () => {
     if (!nome || !valor || !selectedImage) {
       alert('Por favor, preencha todos os campos e selecione uma imagem');
       return;
     }
-
+  
     setIsLoading(true);
-
+  
     try {
+      const usuario = await AsyncStorage.getItem('usuario');
+      const parsedUsuario = JSON.parse(usuario); 
       const produto = {
+        id_loja: parsedUsuario.id_loja,
         nome: nome,
         valor: valor,
-        imagem: selectedImage,
-      };
-
-      // Aqui você pode fazer a chamada para sua API
-      console.log('Produto Adicionado:', produto);
-      alert('Produto adicionado com sucesso!');
+        imagem: selectedImage
+      }
+      const response = await post_produto(produto);
+      if (response.status === 200) {
+        setIsLoading(false)
+        alert('Produto adicionado com sucesso!');
+      } else {
+        alert('Erro ao adicionar produto');
+      }
     } catch (error) {
       console.error('Erro ao enviar produto:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
